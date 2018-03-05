@@ -6,7 +6,8 @@
 //
 
 import UIKit
-
+import FirebaseAuth
+import SVProgressHUD
 
 class RegisterViewController: UIViewController {
 
@@ -16,6 +17,9 @@ class RegisterViewController: UIViewController {
     @IBOutlet var emailTextfield: UITextField!
     @IBOutlet var passwordTextfield: UITextField!
     
+    @IBOutlet weak var errorLabel: UILabel!
+    
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -24,15 +28,24 @@ class RegisterViewController: UIViewController {
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
     }
-    
 
   
     @IBAction func registerPressed(_ sender: AnyObject) {
-        
-
-        
-        //TODO: Set up a new user on our Firbase database
-        
+        SVProgressHUD.show()
+        Auth.auth().createUser(withEmail: self.emailTextfield.text!, password: self.passwordTextfield.text!) {
+            (user, error) in
+            if error != nil {
+                SVProgressHUD.dismiss()
+                print (error)
+                self.errorLabel.backgroundColor = UIColor.darkGray
+                self.errorLabel.text = error?.localizedDescription
+            }
+            else {
+                SVProgressHUD.dismiss()
+                print ("Registration successful")
+                self.performSegue(withIdentifier:"goToChat", sender: self)
+            }
+        }
         
 
         
